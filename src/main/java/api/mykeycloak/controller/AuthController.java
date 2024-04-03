@@ -2,6 +2,7 @@ package api.mykeycloak.controller;
 
 import api.mykeycloak.domain.AuthKeycloak;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,19 +12,21 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-@RequestMapping("/token")
 @RestController
-public class TokenController {
+public class AuthController {
 
     @Autowired
     RestTemplate restTemplate;
 
-    @PostMapping("/")
+    @Value("${url.generate.token}")
+    private String URL;
+
+    @PostMapping("token")
     public ResponseEntity<?> token(@RequestBody AuthKeycloak auth) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(getFormData(auth), headers);
-        return restTemplate.postForEntity("http://localhost:8080/realms/realm/protocol/openid-connect/token", entity, String.class);
+        return restTemplate.postForEntity(URL, entity, String.class);
     }
 
     private  MultiValueMap<String, String> getFormData(AuthKeycloak auth) {
