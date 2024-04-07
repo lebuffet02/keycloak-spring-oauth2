@@ -21,8 +21,6 @@ public class JWTConverter implements Converter<Jwt, AbstractAuthenticationToken>
     }
 
     private List<SimpleGrantedAuthority> grants(List<String> roles) {
-        return roles.stream()
-                .map(r -> new SimpleGrantedAuthority(ROLE.concat(r)))
-                .collect(Collectors.toList());
+        return roles.stream().map(r -> new SimpleGrantedAuthority(ROLE.concat(r))).collect(Collectors.toList());
     }
 }

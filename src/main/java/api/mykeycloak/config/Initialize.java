@@ -13,7 +13,6 @@ public class Initialize {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Initialize.class);
 
-
     @Bean
     public CommandLineRunner initializeLogs() {
         return (args) -> {

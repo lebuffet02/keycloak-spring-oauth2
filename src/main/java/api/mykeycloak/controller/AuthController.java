@@ -1,40 +1,27 @@
 package api.mykeycloak.controller;
 
+import api.mykeycloak.client.KeycloakClient;
 import api.mykeycloak.domain.AuthKeycloak;
+import api.mykeycloak.dto.AuthKeycloakDTO;
+import api.mykeycloak.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
 
     @Autowired
-    RestTemplate restTemplate;
+    KeycloakClient client;
+    @Autowired
+    AuthService service;
 
-    @Value("${url.generate.token}")
-    private String URL;
 
-    @PostMapping("token")
-    public ResponseEntity<?> token(@RequestBody AuthKeycloak auth) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(getFormData(auth), headers);
-        return restTemplate.postForEntity(URL, entity, String.class);
-    }
-
-    private  MultiValueMap<String, String> getFormData(AuthKeycloak auth) {
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("client_id", auth.clientId());
-        formData.add("username", auth.username());
-        formData.add("password", auth.password());
-        formData.add("grant_type", auth.grantType());
-        return formData;
+    @PostMapping("/token")
+    public ResponseEntity<AuthKeycloakDTO> token(@RequestBody AuthKeycloak authKeycloak) {
+        AuthKeycloakDTO authDTO = service.tokenService(authKeycloak);
+        return ResponseEntity.ok(authDTO);
     }
 }
