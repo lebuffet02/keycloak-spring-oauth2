@@ -2,6 +2,7 @@ package api.mykeycloak.controller;
 
 import api.mykeycloak.client.KeycloakClient;
 import api.mykeycloak.domain.AuthKeycloak;
+import api.mykeycloak.domain.RefreshKeycloak;
 import api.mykeycloak.dto.AuthKeycloakDTO;
 import api.mykeycloak.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,11 @@ public class AuthController {
     public ResponseEntity<AuthKeycloakDTO> token(@RequestBody AuthKeycloak authKeycloak) {
         AuthKeycloakDTO authDTO = service.tokenService(authKeycloak);
         return ResponseEntity.ok(authDTO);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthKeycloakDTO> refreshToken(@RequestBody RefreshKeycloak refresh) {
+        AuthKeycloakDTO refreshDTO = service.refreshTokenService(refresh);
+        return ResponseEntity.ok(refreshDTO);
     }
 }
